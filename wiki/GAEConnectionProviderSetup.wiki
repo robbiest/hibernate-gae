@@ -1,13 +1,30 @@
-#summary One-sentence summary of this page.
+#Setup instructions of GAEConnectionProvider
 
-= Introduction =
+== Installation ==
 
-Add your content here.
+First you need to add hibernate-gae-connection-provider-VERSION.jar into WEB-INF/lib folder. 
 
+You can find jar from [downloads], build it from the [source] or from Maven by adding 
 
-= Details =
+{{{
+<dependencies>
+  ...
+  <dependency>
+    <groupId>fi.foyt.hibernate.gae</groupId>
+    <artifactId>connection-provider</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <type>jar</type>
+  </dependency> 
+  ...
+</dependencies>
+}}}
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== Setup ==
+
+To enable connection pooler all you have to do is set hibernate.connection.provider_class property to fi.foyt.hibernate.gae.connection.GAEConnectionProvider
+
+== Example configuration == 
+{{{
+<property name="hibernate.connection.provider_class" value="fi.foyt.hibernate.gae.connection.GAEConnectionProvider"/><property name="hibernate.gae_connection.instance" value="instance:name"/>
+<property name="hibernate.gae_connection.database" value="database"/>
+}}}
