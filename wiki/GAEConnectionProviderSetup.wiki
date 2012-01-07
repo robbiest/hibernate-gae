@@ -25,6 +25,7 @@ To enable connection pooler all you have to do is set hibernate.connection.provi
 
 == Example configuration == 
 {{{
-<property name="hibernate.connection.provider_class" value="fi.foyt.hibernate.gae.connection.GAEConnectionProvider"/><property name="hibernate.gae_connection.instance" value="instance:name"/>
+<property name="hibernate.connection.provider_class" value="fi.foyt.hibernate.gae.connection.GAEConnectionProvider"/>
+<property name="hibernate.gae_connection.instance" value="instance:name"/>
 <property name="hibernate.gae_connection.database" value="database"/>
 }}}
