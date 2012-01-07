@@ -4,7 +4,7 @@
 
 First you need to add hibernate-gae-connection-provider-VERSION.jar into WEB-INF/lib folder. 
 
-You can find jar from [downloads Downloads], build it from the [source source] or from Maven by adding 
+You can find jar from [http://code.google.com/p/hibernate-gae/downloads/ Downloads], build it from the [http://code.google.com/p/hibernate-gae/source/ Source] or from Maven by adding 
 
 {{{
 <dependencies>
