@@ -1,4 +1,4 @@
-#Setup instructions of GAEConnectionProvider
+#summary Setup instructions of GAEConnectionProvider
 
 == Installation ==
 
