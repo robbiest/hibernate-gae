@@ -19,6 +19,8 @@ You can find jar from [http://code.google.com/p/hibernate-gae/downloads/ Downloa
 </dependencies>
 }}}
 
+If you have not yet added this project's Maven repository into your pom.xml you should do it first. Instructions for that can be found from [MavenRepository]
+
 == Setup ==
 
 To enable connection pooler all you have to do is set hibernate.connection.provider_class property to fi.foyt.hibernate.gae.connection.GAEConnectionProvider, hibernate.gae_connection.instance to your cloud sql instance and hibernate.gae_connection.database to your database.
