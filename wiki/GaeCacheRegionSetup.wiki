@@ -23,7 +23,7 @@ If you have not yet added this project's Maven repository into your pom.xml you 
 
 == Setup ==
 
-All you need to do is to set `hibernate.cache.region.factory_class` property to `fi.foyt.hibernate.gae.cache.GaeCacheRegionFactory` in persistence.xml otherwise cache is configured via standard hibernate cache settings.´
+All you need to do is to set `hibernate.cache.region.factory_class` property to `fi.foyt.hibernate.gae.cache.GaeCacheRegionFactory` in persistence.xml otherwise cache is configured via standard hibernate cache settings.
 
 == Example persistence.xml == 
 {{{
