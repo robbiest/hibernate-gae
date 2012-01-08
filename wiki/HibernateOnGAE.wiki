@@ -46,3 +46,35 @@ Here's an example of persistence.xml:
 
 = Bootstrapping =
 
+Again because Hibernate is not officially supported by App Engine you need to handle your EntityManagerFactory initialization your self. To do this all you need to do is to register Cloud SQL Driver and call Persistence.createEntityManagerFactory("myPU");
+
+Here is a example class that does just that:
+
+{{{
+package fi.foyt.hibernate.gae.utils;
+
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+public class HibernateUtils {
+  
+  public static EntityManagerFactory getEntityManagerFactory() {
+    return entityManagerFactory;
+  }
+  
+  private static final EntityManagerFactory entityManagerFactory;
+  
+  static {
+    try {
+      DriverManager.registerDriver(new AppEngineDriver());
+    } catch (SQLException e) {
+      throw new ExceptionInInitializerError(e);
+    }
+    
+    entityManagerFactory = Persistence.createEntityManagerFactory("myPU");
+  }
+}
+}}}
