@@ -2,12 +2,15 @@
 
 = Introduction =
 
-_Btw. I'm assuming you are using Eclipse with Google App Engine plugin. If you are not you probably need to figure some parts out yourself_
+_Btw. I'm assuming you are using Eclipse with Google App Engine plugin. If you are not, you probably need to figure some parts out yourself_
 
 Datanucleus conflicts with Hibernate so you need to remove it from the program. You can do this by unchecking "Use Datanucleus JDO/JPA to access the datastore" from Project properties > Google > App Engine.  
 
+In the same view you should enable Google Cloud SQL and configure it.
 
+Then its time to add hibernate jars into project. Easiest way to do this is to add org.hibernate:hibernate-core-4.0.0.Final and org.hibernate:hibernate-entitymanager-4.0.0.Final Maven artifacts to your project. You can also copy the jars to war/WEB-INF/lib folder if you wish.
 
+  
 
 = Details =
 
