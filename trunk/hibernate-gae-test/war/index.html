@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
+<!-- above set at the top of the file will set     -->
+<!-- the browser's rendering engine into           -->
+<!-- "Quirks Mode". Replacing this declaration     -->
+<!-- with a "Standards Mode" doctype is supported, -->
+<!-- but may lead to some differences in layout.   -->
+
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Hibernate-GAE test</title>
+  </head>
+
+  <body>
+    <h1>Hello!</h1>
+    
+    Before proceeding make sure you have ran following SQL into your database:
+<pre>
+  CREATE TABLE Note (
+    id bigint(20) NOT NULL AUTO_INCREMENT,
+    text varchar(255),
+    PRIMARY KEY (id)
+  );
+</pre>
+    
+    <a href="test">Go to test servlet</a>
+  </body>
+</html>

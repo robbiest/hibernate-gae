@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+  <persistence-unit name="myPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <properties>
+    
+      <!-- Connection -->
+
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+      <property name="hibernate.connection.provider_class" value="fi.foyt.hibernate.gae.connection.GAEConnectionProvider"/>
+
+      <property name="hibernate.gae_connection.instance" value="testcom:testdb"/>
+      <property name="hibernate.gae_connection.database" value="testdb"/>
+
+      <!-- Session Management -->
+
+      <property name="hibernate.current_session_context_class" value="thread" />
+
+      <!-- Cache -->
+<!-- 
+      <property name="hibernate.cache.region.factory_class" value="fi.foyt.hibernate.gae.cache.GaeCacheRegionFactory" />
+      <property name="hibernate.cache.use_second_level_cache" value="true" />
+      <property name="hibernate.cache.use_query_cache" value="true" />
+-->
+
+      <!-- Search -->
+<!-- 
+      <property name="hibernate.search.default.optimizer.operation_limit.max" value="1000" /> 
+      <property name="hibernate.search.default.optimizer.transaction_limit.max" value="100" />
+      <property name="hibernate.search.default.directory_provider" value="fi.foyt.hibernate.gae.search.GaeDirectoryProvider"/>
+      <property name="hibernate.search.default.worker.backend" value="fi.foyt.hibernate.gae.search.GaeBackendQueueProcessor"/>
+ -->    
+    </properties>
+  </persistence-unit>
+
+</persistence>
