@@ -84,4 +84,12 @@ public class HibernateUtils {
 
 = EntityManager =
 
-App Engine does not officially support Hibernate or JNDI so you cannot obtain EntityManager from JNDI or by Resource injection. 
+App Engine does not officially support Hibernate or JNDI so you cannot obtain EntityManager from JNDI or by using @PersistenceContext annotation. 
+
+So unfortunately you have to call createEntityManager to get one and handle it all manually. Because App Engine does not support JTA either same applies to transactions also.
+
+How you do it is up to you but i personally have used servlet filter to handle them automatically.
+
+= Contribution =
+
+If you have found a solution or workaround for some of the problems mentioned here drop me a mail to development (at) foyt.fi  
