@@ -31,6 +31,7 @@ Here's an example of persistence.xml:
     
       <!-- Connection -->
 
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
       <property name="hibernate.connection.provider_class" value="fi.foyt.hibernate.gae.connection.GAEConnectionProvider"/>
       <property name="hibernate.gae_connection.instance" value="testcom:testdb"/>
       <property name="hibernate.gae_connection.database" value="testdb"/>
