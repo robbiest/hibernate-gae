@@ -10,7 +10,39 @@ In the same view you should enable Google Cloud SQL and configure it.
 
 Then its time to add hibernate jars into project. Easiest way to do this is to add org.hibernate:hibernate-core-4.0.0.Final and org.hibernate:hibernate-entitymanager-4.0.0.Final Maven artifacts to your project. You can also copy the jars to war/WEB-INF/lib folder if you wish.
 
+Its optional but you may also want to add Maven artifact fi.foyt.hibernate.gae:hibernate-gae-connection-provider-0.0.1-SNAPSHOT or download hibernate-gae-connection-provider-XXX.jar from Downloads so you would get hibernate-gae version of connection provider to your application.
 
+After all libraries have been set up you need to create persistence.xml
+
+= Persistence.xml =
+
+App Engine is not a Java EE application container so you cannot use JTA. Because of that we need to set transaction-type to RESOURCE_LOCAL and hibernate.current_session_context_class to thread. If you use GAEConnectionProvider you also need to set hibernate.connection.provider_class, hibernate.gae_connection.instance and hibernate.gae_connection.database properties here.
+
+Here's an example of persistence.xml: 
+
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+  <persistence-unit name="myPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <properties>
+    
+      <!-- Connection -->
+
+      <property name="hibernate.connection.provider_class" value="fi.foyt.hibernate.gae.connection.GAEConnectionProvider"/>
+      <property name="hibernate.gae_connection.instance" value="testcom:testdb"/>
+      <property name="hibernate.gae_connection.database" value="testdb"/>
+
+      <!-- Session Management -->
+
+      <property name="hibernate.current_session_context_class" value="thread" />
+    </properties>
+  </persistence-unit>
+
+</persistence>
+}}}
 
 = Details =
 
