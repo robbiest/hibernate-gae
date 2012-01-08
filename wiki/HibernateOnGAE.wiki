@@ -2,7 +2,7 @@
 
 = Introduction =
 
-_Btw. I'm assuming you are using Eclipse with Google App Engine plugin. If you are not you probably need to figure some parts out._
+_Btw. I'm assuming you are using Eclipse with Google App Engine plugin. If you are not you probably need to figure some parts out yourself_
 
 Datanucleus conflicts with Hibernate so you need to remove it from the program. You can do this by unchecking "Use Datanucleus JDO/JPA to access the datastore" from Project properties > Google > App Engine.  
 
