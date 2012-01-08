@@ -81,3 +81,7 @@ public class HibernateUtils {
   }
 }
 }}}
+
+= EntityManager =
+
+App Engine does not officially support Hibernate or JNDI so you cannot obtain EntityManager from JNDI or by Resource injection. 
