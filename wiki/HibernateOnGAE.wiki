@@ -8,7 +8,7 @@ Datanucleus conflicts with Hibernate so you need to remove it from the program. 
 
 In the same view you should enable Google Cloud SQL and configure it.
 
-Then its time to add hibernate jars into project. Easiest way to do this is to add org.hibernate:hibernate-core-4.0.0.Final and org.hibernate:hibernate-entitymanager-4.0.0.Final Maven artifacts to your project. You can also copy the jars to war/WEB-INF/lib folder if you wish.
+Then its time to add Hibernate jars into project. Easiest way to do this is to add org.hibernate:hibernate-core-4.0.0.Final and org.hibernate:hibernate-entitymanager-4.0.0.Final Maven artifacts to your project. You can also copy the jars to war/WEB-INF/lib folder if you wish.
 
 Its optional but you may also want to add Maven artifact fi.foyt.hibernate.gae:hibernate-gae-connection-provider-0.0.1-SNAPSHOT or download hibernate-gae-connection-provider-XXX.jar from Downloads so you would get hibernate-gae version of connection provider to your application.
 
