@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>fi.foyt.hibernate.gae</groupId>
+  <artifactId>test</artifactId>
+  <packaging>war</packaging>
+  <name>Hibernate GAE test</name>
+  <version>0.0.1-SNAPSHOT</version>
+  <licenses>
+    <license>
+      <name>GNU LGPL v3</name>
+      <url>http://www.gnu.org/licenses/lgpl.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/war/WEB-INF/lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- Hibernate -->
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>4.0.0.Final</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>4.0.0.Final</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    
+    <!-- hibernate-gae -->
+    
+    <dependency>
+      <groupId>fi.foyt.hibernate.gae</groupId>
+      <artifactId>hibernate-gae-connection-provider</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency> 
+
+    <!-- Cache 
+    <dependency>
+      <groupId>fi.foyt.hibernate.gae</groupId>
+      <artifactId>hibernate-gae-cache-region</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency> 
+    -->
+    <!-- Search
+    <dependency>
+      <groupId>fi.foyt.hibernate.gae</groupId>
+      <artifactId>hibernate-gae-search</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency> 
+    -->
+  </dependencies>
+
+  <issueManagement>
+    <url>https://code.google.com/p/hibernate-gae/issues/</url>
+    <system>Google Code</system>
+  </issueManagement>
+
+  <scm>
+    <url>http://hibernate-gae.googlecode.com/svn</url>
+  </scm>
+
+  <organization>
+    <name>Foyt</name>
+    <url>http://www.foyt.fi</url>
+  </organization>
+
+  <url>http://hibernate-gae.googlecode.com/</url>
+
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>hibernate-gae</id>
+      <name>Hibernate GAE repository</name>
+      <url>https://hibernate-gae.googlecode.com/svn/repository</url>
+    </repository>
+  </repositories>
+  
+</project>

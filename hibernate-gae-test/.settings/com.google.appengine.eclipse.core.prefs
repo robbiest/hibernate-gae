@@ -1,0 +1,22 @@
+#Sun Jan 08 14:57:03 EET 2012
+eclipse.preferences.version=1
+filesCopiedToWebInfLib=appengine-api-1.0-sdk-1.6.1.jar|appengine-api-labs-1.6.1.jar|appengine-jsr107cache-1.6.1.jar|jsr107cache-1.1.jar|google_sql.jar
+gaeDatanucleusEnabled=false
+gaeDeployDialogSettings=
+gaeHrdEnabled=false
+gaeIsEclipseDefaultInstPath=true
+googleCloudSqlCopiedJdbcDriverPath=/Users/anttileppa/Desktop/eclipse-fni/plugins/com.google.appengine.eclipse.sdkbundle_1.6.1.v201112160242r37/appengine-java-sdk-1.6.1/lib/impl/mysql-connector-java-5.1.18-bin.jar
+googleCloudSqlEnabled=true
+localDevMySqlEnabled=true
+mySqlDatabaseName=testdb
+mySqlDatabasePassword=
+mySqlDatabaseUser=
+mySqlHostName=localhost
+mySqlIsConfigured=true
+mySqlJdbcJar=/Applications/mysql-connector-java-5.1.18/mysql-connector-java-5.1.18-bin.jar
+mySqlPort=3306
+prodDatabaseName=testdb
+prodDatabasePassword=
+prodDatabaseUser=
+prodInstanceName=testcom\:testdb
+prodIsConfigured=true
