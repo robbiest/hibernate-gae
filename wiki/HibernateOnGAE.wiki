@@ -18,6 +18,8 @@ After all libraries have been set up you need to create persistence.xml
 
 App Engine is not a Java EE application container so you cannot use JTA. Because of that we need to set transaction-type to RESOURCE_LOCAL and hibernate.current_session_context_class to thread. If you use GAEConnectionProvider you also need to set hibernate.connection.provider_class, hibernate.gae_connection.instance and hibernate.gae_connection.database properties here.
 
+hibernate.dialect property seems to be mandatory also.
+
 Here's an example of persistence.xml: 
 
 {{{
