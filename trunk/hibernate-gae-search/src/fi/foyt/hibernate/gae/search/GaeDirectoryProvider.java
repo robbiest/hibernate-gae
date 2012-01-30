@@ -9,7 +9,7 @@ import org.hibernate.search.spi.BuildContext;
 import org.hibernate.search.store.DirectoryProvider;
 import org.hibernate.search.store.impl.DirectoryProviderHelper;
 
-import fi.foyt.hibernate.gae.search.persistence.dao.DirectoryJdoDAO;
+import fi.foyt.hibernate.gae.search.persistence.dao.DirectoryDAO;
 import fi.foyt.hibernate.gae.search.persistence.domainmodel.Directory;
 
 public class GaeDirectoryProvider implements DirectoryProvider<GaeDirectory> {
@@ -18,13 +18,13 @@ public class GaeDirectoryProvider implements DirectoryProvider<GaeDirectory> {
     this.indexName = directoryProviderName;
     this.properties = properties;
 
-    DirectoryJdoDAO directoryJdoDAO = new DirectoryJdoDAO();
-    Directory dir = directoryJdoDAO.findByName(this.indexName);
+    DirectoryDAO directoryDAO = new DirectoryDAO();
+    Directory dir = directoryDAO.findByName(this.indexName);
     if (dir == null) {
-      dir = directoryJdoDAO.create(indexName);
+      dir = directoryDAO.create(indexName);
     }
 
-    this.directory = new GaeDirectory(dir.getId());
+    this.directory = new GaeDirectory(dir.getKey().getId());
   }
 
   public void start(DirectoryBasedIndexManager indexManager) {

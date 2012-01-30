@@ -3,7 +3,7 @@
   <groupId>fi.foyt.hibernate.gae</groupId>
   <artifactId>hibernate-gae-search</artifactId>
   <name>Hibernate GAE Search</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <licenses>
     <license>
       <name>GNU LGPL v3</name>
@@ -32,25 +32,18 @@
     	<scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.appengine.orm</groupId>
-      <artifactId>datanucleus-appengine</artifactId>
-      <version>2.0.0-RC2</version>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>1.6.1</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.datanucleus</groupId>
-      <artifactId>datanucleus-core</artifactId>
-      <version>(2.9, )</version>
-    </dependency>
-    <dependency>
-      <groupId>org.datanucleus</groupId>
-      <artifactId>datanucleus-api-jdo</artifactId>
-      <version>(2.9, )</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>javax.jdo</groupId>
-      <artifactId>jdo-api</artifactId>
-      <version>[3.0, 4.0)</version>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-labs</artifactId>
+      <version>1.6.1</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
@@ -121,22 +114,6 @@
             <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.datanucleus</groupId>
-        <artifactId>maven-datanucleus-plugin</artifactId>
-        <version>3.0.1</version>
-        <configuration>
-          <metadataIncludes>fi/foyt/hibernate/gae/search/persistence/domainmodel/*.class</metadataIncludes>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>enhance</goal>
             </goals>
           </execution>
         </executions>

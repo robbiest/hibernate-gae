@@ -22,7 +22,7 @@ import org.hibernate.search.exception.impl.ErrorContextBuilder;
 import org.hibernate.search.indexes.impl.DirectoryBasedIndexManager;
 import org.hibernate.search.spi.WorkerBuildContext;
 
-import fi.foyt.hibernate.gae.search.persistence.dao.LockJdoDAO;
+import fi.foyt.hibernate.gae.search.persistence.dao.LockDAO;
 
 public class GaeBackendQueueProcessor implements BackendQueueProcessor {
   
@@ -140,8 +140,8 @@ public class GaeBackendQueueProcessor implements BackendQueueProcessor {
     }
 
     public void lock() {
-      LockJdoDAO lockJdoDAO = new LockJdoDAO();
-      lockJdoDAO.create(name);
+      LockDAO lockDAO = new LockDAO();
+      lockDAO.create(name);
     }
 
     public void lockInterruptibly() throws InterruptedException {
@@ -153,10 +153,10 @@ public class GaeBackendQueueProcessor implements BackendQueueProcessor {
     }
 
     public boolean tryLock() {
-      LockJdoDAO lockJdoDAO = new LockJdoDAO();
+      LockDAO lockDAO = new LockDAO();
 
-      if (lockJdoDAO.findByName(name) == null) {
-        lockJdoDAO.create(name);
+      if (lockDAO.findByName(name) == null) {
+        lockDAO.create(name);
         return true;
       }
 
@@ -177,8 +177,10 @@ public class GaeBackendQueueProcessor implements BackendQueueProcessor {
     }
 
     public void unlock() {
-      LockJdoDAO lockJdoDAO = new LockJdoDAO();
-      lockJdoDAO.deleteByName(name);
+      LockDAO lockDAO = new LockDAO();
+      fi.foyt.hibernate.gae.search.persistence.domainmodel.Lock lock = lockDAO.findByName(name);
+      if (lock != null)
+        lockDAO.delete(lock);      
     }
 
     private String name;

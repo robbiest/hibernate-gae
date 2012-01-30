@@ -1,18 +1,13 @@
 package fi.foyt.hibernate.gae.search.persistence.domainmodel;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+import com.google.appengine.api.datastore.Entity;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class File {
+public class File extends AbstractObject {
 
-  public Long getId() {
-    return id;
+  public File() {
+    super("FILE");
   }
-  
+
   public String getName() {
     return name;
   }
@@ -60,26 +55,44 @@ public class File {
   public void setFileWritePointer(Long fileWritePointer) {
     this.fileWritePointer = fileWritePointer;
   }
-  
-  @PrimaryKey
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private Long id;
 
-  @Persistent
+  @Override
+  public Entity toEntity() {
+    Entity entity = newEntity();
+    
+     entity.setProperty("name", this.name);
+     entity.setProperty("directoryId", this.directoryId);
+     entity.setProperty("modified", this.modified);
+     entity.setProperty("dataLength", this.dataLength);
+     entity.setProperty("fileReadPointer", this.fileReadPointer);
+     entity.setProperty("fileWritePointer", this.fileWritePointer);
+     
+     return entity;
+  }
+
+  @Override
+  public void loadFromEntity(Entity entity) {
+    if (entity.getKey() != null) {
+      this.setKey(entity.getKey());
+    }
+    
+    this.name = (String) entity.getProperty("name");
+    this.directoryId = (Long) entity.getProperty("directoryId");
+    this.modified = (Long) entity.getProperty("modified");
+    this.dataLength = (Long) entity.getProperty("dataLength");
+    this.fileReadPointer = (Long) entity.getProperty("fileReadPointer");
+    this.fileWritePointer = (Long) entity.getProperty("fileWritePointer");
+  }
+
   private String name;
 
-  @Persistent
   private Long directoryId;
   
-  @Persistent
   private Long modified;
 
-  @Persistent
   private Long dataLength;
 
-  @Persistent
   private Long fileReadPointer;
   
-  @Persistent
   private Long fileWritePointer;
 }

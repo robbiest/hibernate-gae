@@ -1,18 +1,13 @@
 package fi.foyt.hibernate.gae.search.persistence.domainmodel;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+import com.google.appengine.api.datastore.Entity;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class Directory {
-
-  public Long getId() {
-    return id;
-  }
+public class Directory extends AbstractObject {
   
+  public Directory() {
+    super("DIRECTORY");
+  }
+
   public String getName() {
     return name;
   }
@@ -20,11 +15,24 @@ public class Directory {
   public void setName(String name) {
     this.name = name;
   }
-  
-  @PrimaryKey
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private Long id;
 
-  @Persistent
+  @Override
+  public Entity toEntity() {
+    Entity entity = newEntity();
+    
+    entity.setProperty("name", getName());
+    
+    return entity;
+  }
+
+  @Override
+  public void loadFromEntity(Entity entity) {
+    if (entity.getKey() != null) {
+      this.setKey(entity.getKey());
+    }
+    
+    this.name = (String) entity.getProperty("name");
+  }
+
   private String name;
 }

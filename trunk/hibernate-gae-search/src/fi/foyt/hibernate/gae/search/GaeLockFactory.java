@@ -6,7 +6,7 @@ import org.apache.lucene.store.Lock;
 import org.apache.lucene.store.LockFactory;
 import org.apache.lucene.store.LockReleaseFailedException;
 
-import fi.foyt.hibernate.gae.search.persistence.dao.LockJdoDAO;
+import fi.foyt.hibernate.gae.search.persistence.dao.LockDAO;
 
 public class GaeLockFactory extends LockFactory {
 
@@ -29,28 +29,30 @@ public class GaeLockFactory extends LockFactory {
 
     @Override
     public boolean obtain() throws IOException {
-      LockJdoDAO lockJdoDAO = new LockJdoDAO();
-      fi.foyt.hibernate.gae.search.persistence.domainmodel.Lock lock = lockJdoDAO.findByName(lockName);
+      LockDAO lockDAO = new LockDAO();
+      fi.foyt.hibernate.gae.search.persistence.domainmodel.Lock lock = lockDAO.findByName(lockName);
       
       if (lock != null) {
         return false;
       }
       
-      lockJdoDAO.create(lockName);  
+      lockDAO.create(lockName);  
 
       return true;
     }
 
     @Override
     public void release() throws LockReleaseFailedException {
-      LockJdoDAO lockJdoDAO = new LockJdoDAO();
-      lockJdoDAO.deleteByName(lockName);
+      LockDAO lockDAO = new LockDAO();
+      fi.foyt.hibernate.gae.search.persistence.domainmodel.Lock lock = lockDAO.findByName(lockName);
+      if (lock != null)
+        lockDAO.delete(lock);
     }
 
     @Override
     public boolean isLocked() {
-      LockJdoDAO lockJdoDAO = new LockJdoDAO();
-      fi.foyt.hibernate.gae.search.persistence.domainmodel.Lock lock = lockJdoDAO.findByName(lockName);
+      LockDAO lockDAO = new LockDAO();
+      fi.foyt.hibernate.gae.search.persistence.domainmodel.Lock lock = lockDAO.findByName(lockName);
       return lock != null;
     }
     

@@ -1,9 +1,10 @@
 package fi.foyt.hibernate.gae.search;
 
 import java.io.Serializable;
+import java.util.List;
 
-import fi.foyt.hibernate.gae.search.persistence.dao.FileJdoDAO;
-import fi.foyt.hibernate.gae.search.persistence.dao.FileSegmentJdoDAO;
+import fi.foyt.hibernate.gae.search.persistence.dao.FileDAO;
+import fi.foyt.hibernate.gae.search.persistence.dao.FileSegmentDAO;
 import fi.foyt.hibernate.gae.search.persistence.domainmodel.File;
 import fi.foyt.hibernate.gae.search.persistence.domainmodel.FileSegment;
 
@@ -26,49 +27,53 @@ public class GaeFile implements Serializable {
   }
 
   protected synchronized void setLastModified(long lastModified) {
-    FileJdoDAO fileJdoDAO = new FileJdoDAO();
+    FileDAO fileDAO = new FileDAO();
     File file = getFile();
-    fileJdoDAO.updateModified(file, lastModified);
+    fileDAO.updateModified(file, lastModified);
   }
   
   protected synchronized void resetFile() {
-    FileJdoDAO fileDAO = new FileJdoDAO();
-    FileSegmentJdoDAO fileSegmentJdoDAO = new FileSegmentJdoDAO();
+    FileDAO fileDAO = new FileDAO();
+    FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
 
     File file = getFile();
     if (file != null) {
-      fileSegmentJdoDAO.deleteByFileId(file.getId());
+      List<FileSegment> segments = fileSegmentDAO.listByFileId(file.getKey().getId());
+      for (FileSegment segment : segments) {
+        fileSegmentDAO.delete(segment);
+      }
+      
       fileDAO.updateDataLength(file, 0l);  
     }
   }
   
   public void updateLength(long length) {
-    FileJdoDAO fileDAO = new FileJdoDAO();
+    FileDAO fileDAO = new FileDAO();
     fileDAO.updateDataLength(getFile(), length);
   }
   
   protected synchronized int getFileSegmentsCount() {
-    FileSegmentJdoDAO fileSegmentJdoDAO = new FileSegmentJdoDAO();
-    return fileSegmentJdoDAO.listByFileId(getFile().getId()).size();
+    FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
+    return fileSegmentDAO.listByFileId(getFile().getKey().getId()).size();
   }
   
   protected synchronized FileSegment getFileSegment(int index) {
-    FileSegmentJdoDAO fileSegmentJdoDAO = new FileSegmentJdoDAO();
-    return fileSegmentJdoDAO.findByFileIdAndSegmentNo(getFile().getId(), index);
+    FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
+    return fileSegmentDAO.findByFileIdAndSegmentNo(getFile().getKey().getId(), index);
   }
   
   protected synchronized int getNewSegment() {
     int newIndex = getFileSegmentsCount();
-    FileSegmentJdoDAO fileSegmentJdoDAO = new FileSegmentJdoDAO();
-    fileSegmentJdoDAO.create(getFile().getId(), newIndex, null);
+    FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
+    fileSegmentDAO.create(getFile().getKey().getId(), new Long(newIndex), null);
     return newIndex;
   }
   
   private synchronized File getFile() {
-    FileJdoDAO fileJdoDAO = new FileJdoDAO();
-    File file = fileJdoDAO.findByDirectoryIdAndName(directory.getDirectoryId(), fileName);
+    FileDAO fileDAO = new FileDAO();
+    File file = fileDAO.findByDirectoryIdAndName(directory.getDirectoryId(), fileName);
     if (file == null) {
-      file = fileJdoDAO.create(directory.getDirectoryId(), fileName, 0l, System.currentTimeMillis(), 0l, 0l);
+      file = fileDAO.create(directory.getDirectoryId(), fileName, 0l, System.currentTimeMillis(), 0l, 0l);
     }
     
     return file;
