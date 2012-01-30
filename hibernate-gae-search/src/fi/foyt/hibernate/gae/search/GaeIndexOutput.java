@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import org.apache.lucene.store.IndexOutput;
 
-import fi.foyt.hibernate.gae.search.persistence.dao.FileSegmentJdoDAO;
+import fi.foyt.hibernate.gae.search.persistence.dao.FileSegmentDAO;
 import fi.foyt.hibernate.gae.search.persistence.domainmodel.FileSegment;
 
 public class GaeIndexOutput extends IndexOutput {
@@ -47,12 +47,12 @@ public class GaeIndexOutput extends IndexOutput {
       switchCurrentSegment();
     }
 
-    FileSegmentJdoDAO fileSegmentJdoDAO = new FileSegmentJdoDAO();
+    FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
     
     FileSegment fileSegment = getCurrentSegment();
     byte[] segmentData = getSegmentData(fileSegment, segmentPosition + 1);
     segmentData[segmentPosition++] = b;
-    fileSegmentJdoDAO.updateData(fileSegment, segmentData);
+    fileSegmentDAO.updateData(fileSegment, segmentData);
   }
 
   @Override
@@ -64,7 +64,7 @@ public class GaeIndexOutput extends IndexOutput {
         switchCurrentSegment();
       }
       
-      FileSegmentJdoDAO fileSegmentJdoDAO = new FileSegmentJdoDAO();
+      FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
       FileSegment fileSegment = getCurrentSegment();
       int remainInSegment = GaeFile.SEGMENT_SIZE - segmentPosition;
       int bytesToCopy = len < remainInSegment ? len : remainInSegment;
@@ -72,7 +72,7 @@ public class GaeIndexOutput extends IndexOutput {
       byte[] segmentData = getSegmentData(fileSegment, segmentPosition + bytesToCopy);
 
       System.arraycopy(b, offset, segmentData, segmentPosition, bytesToCopy);
-      fileSegmentJdoDAO.updateData(fileSegment, segmentData);
+      fileSegmentDAO.updateData(fileSegment, segmentData);
       
       offset += bytesToCopy;
       len -= bytesToCopy;

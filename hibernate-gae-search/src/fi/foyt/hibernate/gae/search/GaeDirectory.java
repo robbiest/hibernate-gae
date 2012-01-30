@@ -3,6 +3,7 @@ package fi.foyt.hibernate.gae.search;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,9 +12,10 @@ import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.store.SingleInstanceLockFactory;
 
-import fi.foyt.hibernate.gae.search.persistence.dao.FileJdoDAO;
-import fi.foyt.hibernate.gae.search.persistence.dao.FileSegmentJdoDAO;
+import fi.foyt.hibernate.gae.search.persistence.dao.FileDAO;
+import fi.foyt.hibernate.gae.search.persistence.dao.FileSegmentDAO;
 import fi.foyt.hibernate.gae.search.persistence.domainmodel.File;
+import fi.foyt.hibernate.gae.search.persistence.domainmodel.FileSegment;
 
 /**
  * A memory-resident {@link Directory} implementation.  Locking
@@ -40,14 +42,23 @@ public class GaeDirectory extends Directory implements Serializable {
   @Override
   public final String[] listAll() {
     ensureOpen();
-    FileJdoDAO fileDAO = new FileJdoDAO();
-    return fileDAO.listNamesByDirectoryId(getDirectoryId()).toArray(new String[0]);
+    
+    FileDAO fileDAO = new FileDAO();
+    List<File> files = fileDAO.listByDirectoryId(getDirectoryId());
+    String[] result = new String[files.size()]; 
+        
+    int i = 0;
+    for (File file : files) {
+      result[i++] = file.getName();
+    }
+    
+    return result;
   }
 
   @Override
   public final boolean fileExists(String name) {
     ensureOpen();
-    FileJdoDAO fileDAO = new FileJdoDAO();
+    FileDAO fileDAO = new FileDAO();
     File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
     return file != null;
   }
@@ -60,7 +71,7 @@ public class GaeDirectory extends Directory implements Serializable {
   @Override
   public final long fileModified(String name) throws IOException {
     ensureOpen();
-    FileJdoDAO fileDAO = new FileJdoDAO();
+    FileDAO fileDAO = new FileDAO();
     File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
     if (file == null)
       throw new FileNotFoundException();
@@ -81,8 +92,8 @@ public class GaeDirectory extends Directory implements Serializable {
   @Override
   public final long fileLength(String name) throws IOException {
     ensureOpen();
-    FileJdoDAO fileJdoDAO = new FileJdoDAO();
-    File file = fileJdoDAO.findByDirectoryIdAndName(getDirectoryId(), name);
+    FileDAO fileDAO = new FileDAO();
+    File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
     if (file == null)
       throw new FileNotFoundException();
 
@@ -98,14 +109,16 @@ public class GaeDirectory extends Directory implements Serializable {
   public void deleteFile(String name) throws IOException {
     ensureOpen();
     
-    FileJdoDAO fileDAO = new FileJdoDAO();
-    FileSegmentJdoDAO fileSegmentJdoDAO = new FileSegmentJdoDAO();
+    FileDAO fileDAO = new FileDAO();
+    FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
 
     File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
     if (file != null) {
-      fileSegmentJdoDAO.deleteByFileId(file.getId());
-      fileDAO.deleteById(file.getId());      
-      
+      List<FileSegment> segments = fileSegmentDAO.listByFileId(file.getKey().getId());
+      for (FileSegment segment : segments) {
+        fileSegmentDAO.delete(segment);
+      }
+      fileDAO.delete(file);      
       LOG.fine("Deleted search index file " + name + " from directory " + directoryId);
     } else {
       throw new FileNotFoundException();
@@ -135,8 +148,8 @@ public class GaeDirectory extends Directory implements Serializable {
   public IndexInput openInput(String name) throws IOException {
     ensureOpen();
     
-    FileJdoDAO fileJdoDAO = new FileJdoDAO();
-    File file = fileJdoDAO.findByDirectoryIdAndName(getDirectoryId(), name);
+    FileDAO fileDAO = new FileDAO();
+    File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
     if ((file == null) || (file.getDataLength() < 1))
       throw new FileNotFoundException(name);
 
