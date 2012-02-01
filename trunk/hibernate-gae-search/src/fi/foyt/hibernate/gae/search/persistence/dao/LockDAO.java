@@ -8,7 +8,7 @@ import fi.foyt.hibernate.gae.search.persistence.domainmodel.Lock;
 public class LockDAO extends GenericDAO<Lock> {
 
   public LockDAO() {
-    super("LOCK");
+    super("LOCK", false);
   }
 
   public Lock create(String name) {

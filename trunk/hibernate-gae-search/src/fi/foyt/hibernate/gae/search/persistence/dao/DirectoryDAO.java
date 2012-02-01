@@ -8,7 +8,7 @@ import fi.foyt.hibernate.gae.search.persistence.domainmodel.Directory;
 public class DirectoryDAO extends GenericDAO<Directory> {
 
   public DirectoryDAO() {
-    super("DIRECTORY");
+    super("DIRECTORY", false);
   }
 
   public Directory create(String name) {
