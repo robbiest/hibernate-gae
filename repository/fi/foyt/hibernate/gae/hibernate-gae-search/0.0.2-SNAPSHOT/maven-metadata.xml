@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>fi.foyt.hibernate.gae</groupId>
+  <artifactId>hibernate-gae-search</artifactId>
+  <version>0.0.2-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20120201.175948</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20120201175952</lastUpdated>
+  </versioning>
+</metadata>
