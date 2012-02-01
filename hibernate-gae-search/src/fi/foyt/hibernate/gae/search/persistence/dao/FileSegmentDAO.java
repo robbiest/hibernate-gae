@@ -2,7 +2,6 @@ package fi.foyt.hibernate.gae.search.persistence.dao;
 
 import java.util.List;
 
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 
@@ -11,7 +10,7 @@ import fi.foyt.hibernate.gae.search.persistence.domainmodel.FileSegment;
 public class FileSegmentDAO extends GenericDAO<FileSegment> {
   
   public FileSegmentDAO() {
-    super("FILESEGMENT");
+    super("FILESEGMENT", true);
   }
 
   public FileSegment create(Long fileId, Long segmentNo, byte[] data) {
@@ -33,12 +32,11 @@ public class FileSegmentDAO extends GenericDAO<FileSegment> {
   public List<FileSegment> listByFileId(Long fileId) {
     Query query = new Query(getKind()).addFilter("fileId", FilterOperator.EQUAL, fileId);
   
-    return listObjects(getDatastoreService().prepare(query).asList(FetchOptions.Builder.withDefaults()));
+    return getObjectList(query);
   }
-  
+
   public void updateData(FileSegment fileSegment, byte[] data) {
     fileSegment.setData(data);
     persist(fileSegment); 
   }
-
 }

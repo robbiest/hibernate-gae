@@ -2,7 +2,6 @@ package fi.foyt.hibernate.gae.search.persistence.dao;
 
 import java.util.List;
 
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 
@@ -11,7 +10,7 @@ import fi.foyt.hibernate.gae.search.persistence.domainmodel.File;
 public class FileDAO extends GenericDAO<File> {
 
   public FileDAO() {
-    super("FILE");
+    super("FILE", false);
   }
 
   public File create(Long directoryId, String name, Long dataLength, Long modified, Long fileReadPointer, Long fileWritePointer) {
@@ -36,7 +35,7 @@ public class FileDAO extends GenericDAO<File> {
 
   public List<File> listByDirectoryId(Long directoryId) {
     Query query = new Query(getKind()).addFilter("directoryId", FilterOperator.EQUAL, directoryId);
-    return listObjects(getDatastoreService().prepare(query).asList(FetchOptions.Builder.withDefaults()));
+    return getObjectList(query);
   }
 
   public void updateModified(File file, long modified) {
