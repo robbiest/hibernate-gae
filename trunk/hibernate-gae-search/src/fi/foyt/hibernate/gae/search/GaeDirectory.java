@@ -10,18 +10,12 @@ import java.util.logging.Logger;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
-import org.apache.lucene.store.SingleInstanceLockFactory;
 
 import fi.foyt.hibernate.gae.search.persistence.dao.FileDAO;
 import fi.foyt.hibernate.gae.search.persistence.dao.FileSegmentDAO;
 import fi.foyt.hibernate.gae.search.persistence.domainmodel.File;
 import fi.foyt.hibernate.gae.search.persistence.domainmodel.FileSegment;
 
-/**
- * A memory-resident {@link Directory} implementation.  Locking
- * implementation is by default the {@link SingleInstanceLockFactory}
- * but can be changed with {@link #setLockFactory}.
- */
 public class GaeDirectory extends Directory implements Serializable {
 
   private static final long serialVersionUID = 1l;
@@ -30,8 +24,7 @@ public class GaeDirectory extends Directory implements Serializable {
 
   public GaeDirectory(Long directoryId) {
     try {
-      // TODO: This does not work on production environment
-      setLockFactory(new SingleInstanceLockFactory());
+      setLockFactory(new GaeLockFactory());
     } catch (IOException e) {
       LOG.log(Level.SEVERE, "Could not initialize lock factory", e);
     }

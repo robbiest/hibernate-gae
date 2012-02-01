@@ -1,6 +1,5 @@
 package fi.foyt.hibernate.gae.search;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -15,9 +14,9 @@ import org.apache.lucene.index.IndexWriter;
 import org.hibernate.search.backend.IndexingMonitor;
 import org.hibernate.search.backend.LuceneWork;
 import org.hibernate.search.backend.impl.lucene.AbstractWorkspaceImpl;
-import org.hibernate.search.backend.impl.lucene.LuceneBackendResources;
-import org.hibernate.search.backend.impl.lucene.SingleTaskRunnable;
+import org.hibernate.search.backend.impl.lucene.works.LuceneWorkVisitor;
 import org.hibernate.search.backend.spi.BackendQueueProcessor;
+import org.hibernate.search.exception.ErrorHandler;
 import org.hibernate.search.exception.impl.ErrorContextBuilder;
 import org.hibernate.search.indexes.impl.DirectoryBasedIndexManager;
 import org.hibernate.search.spi.WorkerBuildContext;
@@ -30,7 +29,8 @@ public class GaeBackendQueueProcessor implements BackendQueueProcessor {
 
   public void initialize(Properties props, WorkerBuildContext context, DirectoryBasedIndexManager indexManager) {
     this.workspace = new GaeWorkspace(indexManager, null);
-    this.resources = initializeBackendResources(context, indexManager, props, workspace);
+    this.visitor = new LuceneWorkVisitor(workspace);
+    this.errorHandler = context.getErrorHandler();
   }
 
   public void close() {
@@ -47,7 +47,7 @@ public class GaeBackendQueueProcessor implements BackendQueueProcessor {
   }
 
   private void doWork(List<LuceneWork> workList, IndexingMonitor monitor, boolean streaming) {
-    Lock modificationLock = resources.getParallelModificationLock();
+    Lock modificationLock = getParallelModificationLock();
     
     modificationLock.lock();
     try {
@@ -60,18 +60,9 @@ public class GaeBackendQueueProcessor implements BackendQueueProcessor {
     finally {
       modificationLock.unlock();
     }
-    
-    /**
-    
-    LuceneBackendQueueTask luceneBackendQueueProcessor = new LuceneBackendQueueTask(workList, resources, monitor, streaming);
-    luceneBackendQueueProcessor.run();
-    
-    **/
   }
-  
+
   private void applyUpdates(List<LuceneWork> workList, IndexingMonitor monitor, boolean streaming) throws InterruptedException, ExecutionException {
-    AbstractWorkspaceImpl workspace = resources.getWorkspace();
-    
     ErrorContextBuilder errorContextBuilder = new ErrorContextBuilder();
     errorContextBuilder.allWorkToBeDone( workList );
     
@@ -86,19 +77,19 @@ public class GaeBackendQueueProcessor implements BackendQueueProcessor {
       
       int queueSize = workList.size();
       for ( int i = 0; i < queueSize; i++ ) {
-        SingleTaskRunnable task = new SingleTaskRunnable( workList.get( i ), resources, indexWriter, monitor );
+        LuceneWork work = workList.get(i);
         try {
-          task.run();
+          work.getWorkDelegate( getVisitor() ).performWork( work, indexWriter, monitor );
         } catch (Exception e) {
           someFailureHappened = true;
           errorContextBuilder.errorThatOccurred( e.getCause() );
-          failedWorkds.add(workList.get( i ));
+          failedWorkds.add(work);
         }
       }
       
       if (someFailureHappened) {
         errorContextBuilder.addAllWorkThatFailed(failedWorkds);
-        resources.getErrorHandler().handle( errorContextBuilder.createErrorContext() );
+        getErrorHandler().handle( errorContextBuilder.createErrorContext() );
       } else {
         if ( !streaming ) {
           workspace.optimizerPhase();
@@ -107,31 +98,32 @@ public class GaeBackendQueueProcessor implements BackendQueueProcessor {
       
     }
     finally {
-      resources.getWorkspace().afterTransactionApplied( someFailureHappened );
+      workspace.afterTransactionApplied( someFailureHappened );
     }
   }
   
+  private LuceneWorkVisitor getVisitor() {
+    return visitor;
+  }
+  
+  private ErrorHandler getErrorHandler() {
+    return errorHandler;
+  }
+
+  private Lock getParallelModificationLock() {
+    return readLock;
+  }
 
   public Lock getExclusiveWriteLock() {
-    return lock;
+    return writeLock;
   }
 
-  private final Lock lock = new LockImpl("backendLock");
+  private final Lock readLock = new LockImpl("backendLock.parallelModificationLock");
+  private final Lock writeLock = new LockImpl("backendLock.exclusiveWriteLock");
+  
   private AbstractWorkspaceImpl workspace;
-  private LuceneBackendResources resources;
-
-  private LuceneBackendResources initializeBackendResources(WorkerBuildContext context, DirectoryBasedIndexManager indexManager, Properties props,
-      AbstractWorkspaceImpl workspace) {
-    Constructor<LuceneBackendResources> constructor;
-    try {
-      constructor = LuceneBackendResources.class.getDeclaredConstructor(WorkerBuildContext.class, DirectoryBasedIndexManager.class, Properties.class,
-          AbstractWorkspaceImpl.class);
-      constructor.setAccessible(true);
-      return constructor.newInstance(context, indexManager, props, workspace);
-    } catch (Exception e) {
-      return null;
-    }
-  }
+  private LuceneWorkVisitor visitor;
+  private ErrorHandler errorHandler;
 
   private class LockImpl implements Lock {
 
