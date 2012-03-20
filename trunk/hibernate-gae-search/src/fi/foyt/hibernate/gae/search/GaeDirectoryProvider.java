@@ -1,9 +1,9 @@
 package fi.foyt.hibernate.gae.search;
 
-import java.io.IOException;
 import java.util.Properties;
 
-import org.hibernate.search.SearchException;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.Lock;
 import org.hibernate.search.indexes.impl.DirectoryBasedIndexManager;
 import org.hibernate.search.spi.BuildContext;
 import org.hibernate.search.store.DirectoryProvider;
@@ -16,7 +16,6 @@ public class GaeDirectoryProvider implements DirectoryProvider<GaeDirectory> {
 
   public void initialize(String directoryProviderName, Properties properties, BuildContext context) {
     this.indexName = directoryProviderName;
-    this.properties = properties;
 
     DirectoryDAO directoryDAO = new DirectoryDAO();
     Directory dir = directoryDAO.findByName(this.indexName);
@@ -24,17 +23,11 @@ public class GaeDirectoryProvider implements DirectoryProvider<GaeDirectory> {
       dir = directoryDAO.create(indexName);
     }
 
-    this.directory = new GaeDirectory(dir.getKey().getId());
+    this.directory = new GaeDirectory(dir);
   }
 
   public void start(DirectoryBasedIndexManager indexManager) {
-    try {
-      directory.setLockFactory(DirectoryProviderHelper.createLockFactory(null, properties));
-      properties = null;
-      DirectoryProviderHelper.initializeIndexIfNeeded(directory);
-    } catch (IOException e) {
-      throw new SearchException("Unable to initialize index: " + indexName, e);
-    }
+    DirectoryProviderHelper.initializeIndexIfNeeded(directory);
   }
 
   public GaeDirectory getDirectory() {
@@ -47,5 +40,8 @@ public class GaeDirectoryProvider implements DirectoryProvider<GaeDirectory> {
 
   private GaeDirectory directory;
   private String indexName;
-  private Properties properties;
+  
+  static {
+  	IndexWriterConfig.setDefaultWriteLockTimeout(Lock.LOCK_OBTAIN_WAIT_FOREVER);
+  }
 }

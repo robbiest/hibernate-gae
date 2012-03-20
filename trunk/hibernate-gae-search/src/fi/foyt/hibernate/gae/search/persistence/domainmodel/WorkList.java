@@ -3,14 +3,14 @@ package fi.foyt.hibernate.gae.search.persistence.domainmodel;
 import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.Entity;
 
-public class FileSegment extends AbstractObject {
-  
-	public FileSegment() {
-    super("FILESEGMENT");
-  }
+public class WorkList extends AbstractObject {
 	
-  public FileSegment(File file) {
-    super("FILESEGMENT", file.getKey());
+	public WorkList() {
+    super("WORKLIST");
+  }
+  
+  public WorkList(Directory directory) {
+    super("WORKLIST", directory.getKey());
   }
 
   public byte[] getData() {
@@ -21,21 +21,12 @@ public class FileSegment extends AbstractObject {
     this.data = data;
   }
 
-  public Long getSegmentNo() {
-    return segmentNo;
-  }
-  
-  public void setSegmentNo(Long segmentNo) {
-    this.segmentNo = segmentNo;
-  }
-
   @Override
   public Entity toEntity() {
     Entity entity = newEntity();
     
     if (data != null)
       entity.setProperty("data", new com.google.appengine.api.datastore.Blob(data));
-    entity.setProperty("segmentNo", segmentNo);
     
     return entity;
   }
@@ -48,10 +39,7 @@ public class FileSegment extends AbstractObject {
     
     com.google.appengine.api.datastore.Blob dataBlob = (Blob) entity.getProperty("data"); 
     this.data = dataBlob != null ? dataBlob.getBytes() : null;
-    this.segmentNo = (Long) entity.getProperty("segmentNo");
   }
 
   private byte[] data;
-
-  private Long segmentNo;
 }

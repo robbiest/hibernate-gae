@@ -20,6 +20,7 @@ public class GaeIndexOutput extends IndexOutput {
   @Override
   public void close() throws IOException {
     flush();    
+    
     LOG.fine("Index output writer closed");
   }
 
