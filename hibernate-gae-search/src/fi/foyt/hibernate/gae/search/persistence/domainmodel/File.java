@@ -4,8 +4,12 @@ import com.google.appengine.api.datastore.Entity;
 
 public class File extends AbstractObject {
 
-  public File() {
-    super("FILE");
+	public File() {
+		super("FILE");
+  }
+	
+  public File(Directory directory) {
+    super("FILE", directory.getKey());
   }
 
   public String getName() {
@@ -15,15 +19,7 @@ public class File extends AbstractObject {
   public void setName(String name) {
     this.name = name;
   }
-  
-  public Long getDirectoryId() {
-    return directoryId;
-  }
-  
-  public void setDirectoryId(Long directoryId) {
-    this.directoryId = directoryId;
-  }
-  
+
   public Long getModified() {
     return modified;
   }
@@ -61,7 +57,6 @@ public class File extends AbstractObject {
     Entity entity = newEntity();
     
      entity.setProperty("name", this.name);
-     entity.setProperty("directoryId", this.directoryId);
      entity.setProperty("modified", this.modified);
      entity.setProperty("dataLength", this.dataLength);
      entity.setProperty("fileReadPointer", this.fileReadPointer);
@@ -77,7 +72,6 @@ public class File extends AbstractObject {
     }
     
     this.name = (String) entity.getProperty("name");
-    this.directoryId = (Long) entity.getProperty("directoryId");
     this.modified = (Long) entity.getProperty("modified");
     this.dataLength = (Long) entity.getProperty("dataLength");
     this.fileReadPointer = (Long) entity.getProperty("fileReadPointer");
@@ -85,8 +79,6 @@ public class File extends AbstractObject {
   }
 
   private String name;
-
-  private Long directoryId;
   
   private Long modified;
 

@@ -3,7 +3,7 @@
   <groupId>fi.foyt.hibernate.gae</groupId>
   <artifactId>hibernate-gae-search</artifactId>
   <name>Hibernate GAE Search</name>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <licenses>
     <license>
       <name>GNU LGPL v3</name>
@@ -18,32 +18,19 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>4.0.0.Final</version>
-      <type>jar</type>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
     	<groupId>org.hibernate</groupId>
     	<artifactId>hibernate-search</artifactId>
-    	<version>4.0.0.Final</version>
-    	<type>jar</type>
-    	<scope>compile</scope>
+    	<version>4.1.0.CR2</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.6.1</version>
-      <type>jar</type>
-      <scope>compile</scope>
+      <version>1.6.3</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-labs</artifactId>
-      <version>1.6.1</version>
-      <type>jar</type>
-      <scope>compile</scope>
+      <version>1.6.3</version>
     </dependency>
   </dependencies>
 

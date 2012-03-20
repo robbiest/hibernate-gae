@@ -8,6 +8,11 @@ public abstract class AbstractObject {
   public AbstractObject(String kind) {
     this.kind = kind;
   }
+
+  public AbstractObject(String kind, Key parent) {
+    this.kind = kind;
+    this.parent = parent;
+  }
   
   public Key getKey() {
     return key;
@@ -21,11 +26,18 @@ public abstract class AbstractObject {
     return kind;
   }
   
+  public void setParent(Key parent) {
+	  this.parent = parent;
+  }
+  
   protected Entity newEntity() {
     if (getKey() != null) {
       return new Entity(getKey());
     } else {
-      return new Entity(getKind());
+    	if (parent != null)
+    		return new Entity(getKind(), parent);
+    	else
+    		return new Entity(getKind());
     }
   }
 
@@ -33,5 +45,6 @@ public abstract class AbstractObject {
   public abstract void loadFromEntity(Entity entity);
 
   private Key key;
+  private Key parent;
   private String kind;
 }

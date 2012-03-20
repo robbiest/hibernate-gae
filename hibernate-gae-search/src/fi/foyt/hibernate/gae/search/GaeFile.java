@@ -38,7 +38,7 @@ public class GaeFile implements Serializable {
 
     File file = getFile();
     if (file != null) {
-      List<FileSegment> segments = fileSegmentDAO.listByFileId(file.getKey().getId());
+      List<FileSegment> segments = fileSegmentDAO.listByFile(file);
       for (FileSegment segment : segments) {
         fileSegmentDAO.delete(segment);
       }
@@ -54,26 +54,26 @@ public class GaeFile implements Serializable {
   
   protected synchronized int getFileSegmentsCount() {
     FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
-    return fileSegmentDAO.listByFileId(getFile().getKey().getId()).size();
+    return fileSegmentDAO.listByFile(getFile()).size();
   }
   
   protected synchronized FileSegment getFileSegment(int index) {
     FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
-    return fileSegmentDAO.findByFileIdAndSegmentNo(getFile().getKey().getId(), index);
+    return fileSegmentDAO.findByFileAndSegmentNo(getFile(), index);
   }
   
   protected synchronized int getNewSegment() {
     int newIndex = getFileSegmentsCount();
     FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
-    fileSegmentDAO.create(getFile().getKey().getId(), new Long(newIndex), null);
+    fileSegmentDAO.create(getFile(), new Long(newIndex), null);
     return newIndex;
   }
   
   private synchronized File getFile() {
     FileDAO fileDAO = new FileDAO();
-    File file = fileDAO.findByDirectoryIdAndName(directory.getDirectoryId(), fileName);
+    File file = fileDAO.findByDirectoryAndName(directory.getDirectory(), fileName);
     if (file == null) {
-      file = fileDAO.create(directory.getDirectoryId(), fileName, 0l, System.currentTimeMillis(), 0l, 0l);
+      file = fileDAO.create(directory.getDirectory(), fileName, 0l, System.currentTimeMillis(), 0l, 0l);
     }
     
     return file;

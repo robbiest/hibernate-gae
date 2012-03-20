@@ -13,6 +13,7 @@ public class GaeIndexInput extends IndexInput implements Cloneable {
   private static final Logger LOG = Logger.getLogger(GaeIndexInput.class.getName());
 
   public GaeIndexInput(GaeFile f) throws IOException {
+  	super(GaeIndexInput.class.toString());
     file = f;
     currentSegmentIndex = 0;
   }
@@ -38,7 +39,10 @@ public class GaeIndexInput extends IndexInput implements Cloneable {
 
   @Override
   public void readBytes(byte[] b, int offset, int len) throws IOException {
-    while (len > 0) {
+  	long time = System.currentTimeMillis();
+  	int originalLen = len;
+  	
+  	while (len > 0) {
       if (segmentPosition >= GaeFile.SEGMENT_SIZE) {
         currentSegmentIndex++;
         switchCurrentSegment(true);
@@ -53,6 +57,8 @@ public class GaeIndexInput extends IndexInput implements Cloneable {
       len -= bytesToCopy;
       segmentPosition += bytesToCopy;
     }
+  	
+  	LOG.fine("Read " + originalLen + " bytes in " + (System.currentTimeMillis() - time) + "ms");
   }
 
   private final void switchCurrentSegment(boolean enforceEOF) throws IOException {

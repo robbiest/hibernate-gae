@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 
+import fi.foyt.hibernate.gae.search.persistence.domainmodel.File;
 import fi.foyt.hibernate.gae.search.persistence.domainmodel.FileSegment;
 
 public class FileSegmentDAO extends GenericDAO<FileSegment> {
@@ -13,24 +14,22 @@ public class FileSegmentDAO extends GenericDAO<FileSegment> {
     super("FILESEGMENT", true);
   }
 
-  public FileSegment create(Long fileId, Long segmentNo, byte[] data) {
-    FileSegment fileSegment = new FileSegment();
+  public FileSegment create(File file, Long segmentNo, byte[] data) {
+    FileSegment fileSegment = new FileSegment(file);
     fileSegment.setData(data);
-    fileSegment.setFileId(fileId);
     fileSegment.setSegmentNo(segmentNo);
     return persist(fileSegment);
   }
 
-  public FileSegment findByFileIdAndSegmentNo(Long fileId, Integer segmentNo) {
-    Query query = new Query(getKind())
-      .addFilter("fileId", FilterOperator.EQUAL, fileId)
+  public FileSegment findByFileAndSegmentNo(File file, Integer segmentNo) {
+    Query query = new Query(getKind(), file.getKey())
       .addFilter("segmentNo", FilterOperator.EQUAL, segmentNo);
     
     return getSingleObject(query);
   }
   
-  public List<FileSegment> listByFileId(Long fileId) {
-    Query query = new Query(getKind()).addFilter("fileId", FilterOperator.EQUAL, fileId);
+  public List<FileSegment> listByFile(File file) {
+    Query query = new Query(getKind(), file.getKey());
   
     return getObjectList(query);
   }

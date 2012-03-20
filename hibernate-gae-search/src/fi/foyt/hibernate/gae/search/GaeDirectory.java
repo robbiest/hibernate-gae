@@ -21,15 +21,19 @@ public class GaeDirectory extends Directory implements Serializable {
   private static final long serialVersionUID = 1l;
 
   private static Logger LOG = Logger.getLogger(GaeDirectory.class.getName());
-
-  public GaeDirectory(Long directoryId) {
+  
+  public GaeDirectory() {
     try {
       setLockFactory(new GaeLockFactory());
     } catch (IOException e) {
       LOG.log(Level.SEVERE, "Could not initialize lock factory", e);
     }
+  }
+
+  public GaeDirectory(fi.foyt.hibernate.gae.search.persistence.domainmodel.Directory directory) {
+    this();
     
-    this.directoryId = directoryId;
+    this.directory = directory;
   }
 
   @Override
@@ -37,7 +41,7 @@ public class GaeDirectory extends Directory implements Serializable {
     ensureOpen();
     
     FileDAO fileDAO = new FileDAO();
-    List<File> files = fileDAO.listByDirectoryId(getDirectoryId());
+    List<File> files = fileDAO.listByDirectory(getDirectory());
     String[] result = new String[files.size()]; 
         
     int i = 0;
@@ -52,7 +56,7 @@ public class GaeDirectory extends Directory implements Serializable {
   public final boolean fileExists(String name) {
     ensureOpen();
     FileDAO fileDAO = new FileDAO();
-    File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
+    File file = fileDAO.findByDirectoryAndName(getDirectory(), name);
     return file != null;
   }
 
@@ -65,7 +69,7 @@ public class GaeDirectory extends Directory implements Serializable {
   public final long fileModified(String name) throws IOException {
     ensureOpen();
     FileDAO fileDAO = new FileDAO();
-    File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
+    File file = fileDAO.findByDirectoryAndName(getDirectory(), name);
     if (file == null)
       throw new FileNotFoundException();
     
@@ -86,7 +90,7 @@ public class GaeDirectory extends Directory implements Serializable {
   public final long fileLength(String name) throws IOException {
     ensureOpen();
     FileDAO fileDAO = new FileDAO();
-    File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
+    File file = fileDAO.findByDirectoryAndName(getDirectory(), name);
     if (file == null)
       throw new FileNotFoundException();
 
@@ -105,14 +109,14 @@ public class GaeDirectory extends Directory implements Serializable {
     FileDAO fileDAO = new FileDAO();
     FileSegmentDAO fileSegmentDAO = new FileSegmentDAO();
 
-    File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
+    File file = fileDAO.findByDirectoryAndName(getDirectory(), name);
     if (file != null) {
-      List<FileSegment> segments = fileSegmentDAO.listByFileId(file.getKey().getId());
+      List<FileSegment> segments = fileSegmentDAO.listByFile(file);
       for (FileSegment segment : segments) {
         fileSegmentDAO.delete(segment);
       }
       fileDAO.delete(file);      
-      LOG.fine("Deleted search index file " + name + " from directory " + directoryId);
+      LOG.fine("Deleted search index file " + name + " from directory " + getDirectory().getName());
     } else {
       throw new FileNotFoundException();
     }
@@ -142,7 +146,7 @@ public class GaeDirectory extends Directory implements Serializable {
     ensureOpen();
     
     FileDAO fileDAO = new FileDAO();
-    File file = fileDAO.findByDirectoryIdAndName(getDirectoryId(), name);
+    File file = fileDAO.findByDirectoryAndName(getDirectory(), name);
     if ((file == null) || (file.getDataLength() < 1))
       throw new FileNotFoundException(name);
 
@@ -154,9 +158,9 @@ public class GaeDirectory extends Directory implements Serializable {
     isOpen = false;
   }
 
-  public Long getDirectoryId() {
-    return directoryId;
+  public fi.foyt.hibernate.gae.search.persistence.domainmodel.Directory getDirectory() {
+    return directory;
   }
   
-  private Long directoryId;
+  private fi.foyt.hibernate.gae.search.persistence.domainmodel.Directory directory;
 }

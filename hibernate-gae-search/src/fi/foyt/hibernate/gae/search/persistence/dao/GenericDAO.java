@@ -59,6 +59,9 @@ public class GenericDAO<T extends AbstractObject> {
   
   protected T getSingleObject(Query query) {
     Entity entity = getSingleEntity(query);
+    if (entity == null)
+    	return null;
+    
     if (cached) {
       Entity cachedEntity = getCachedEntity(entity.getKey());
       if (cachedEntity != null) {
