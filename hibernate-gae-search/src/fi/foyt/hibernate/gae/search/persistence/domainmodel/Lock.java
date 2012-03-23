@@ -7,6 +7,10 @@ public class Lock extends AbstractObject {
   public Lock() {
     super("LOCK");
   }
+  
+  public Lock(Directory directory) {
+    super("LOCK", directory.getKey());
+  }
 
   public String getName() {
     return name;

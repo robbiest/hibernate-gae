@@ -36,22 +36,6 @@ public class File extends AbstractObject {
     this.dataLength = dataLength;
   }
 
-  public Long getFileReadPointer() {
-    return fileReadPointer;
-  }
-  
-  public void setFileReadPointer(Long fileReadPointer) {
-    this.fileReadPointer = fileReadPointer;
-  }
-  
-  public Long getFileWritePointer() {
-    return fileWritePointer;
-  }
-  
-  public void setFileWritePointer(Long fileWritePointer) {
-    this.fileWritePointer = fileWritePointer;
-  }
-
   @Override
   public Entity toEntity() {
     Entity entity = newEntity();
@@ -59,8 +43,6 @@ public class File extends AbstractObject {
      entity.setProperty("name", this.name);
      entity.setProperty("modified", this.modified);
      entity.setProperty("dataLength", this.dataLength);
-     entity.setProperty("fileReadPointer", this.fileReadPointer);
-     entity.setProperty("fileWritePointer", this.fileWritePointer);
      
      return entity;
   }
@@ -74,8 +56,6 @@ public class File extends AbstractObject {
     this.name = (String) entity.getProperty("name");
     this.modified = (Long) entity.getProperty("modified");
     this.dataLength = (Long) entity.getProperty("dataLength");
-    this.fileReadPointer = (Long) entity.getProperty("fileReadPointer");
-    this.fileWritePointer = (Long) entity.getProperty("fileWritePointer");
   }
 
   private String name;
@@ -83,8 +63,4 @@ public class File extends AbstractObject {
   private Long modified;
 
   private Long dataLength;
-
-  private Long fileReadPointer;
-  
-  private Long fileWritePointer;
 }
