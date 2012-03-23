@@ -10,6 +10,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.memcache.MemcacheService;
@@ -27,7 +28,7 @@ public class GenericDAO<T extends AbstractObject> {
   public String getKind() {
     return kind;
   }
-
+  
   protected DatastoreService getDatastoreService() {
     return DatastoreServiceFactory.getDatastoreService();
   }
@@ -47,6 +48,7 @@ public class GenericDAO<T extends AbstractObject> {
     
     if (cached == true) {
       purgeCachedEntity(key);
+      cacheEntity(object.toEntity());
     }
     
     return object;
@@ -121,8 +123,12 @@ public class GenericDAO<T extends AbstractObject> {
   }
   
   private Entity getCachedEntity(Key key) {
-    MemcacheService cache = getEntityCache();
-    return (Entity) cache.get(key);
+  	try {
+      MemcacheService cache = getEntityCache();
+      return (Entity) cache.get(key);
+  	} catch (Exception e) {
+  		return null;
+  	}
   }
   
   private Key persist(Entity entity) {
@@ -157,17 +163,62 @@ public class GenericDAO<T extends AbstractObject> {
   }
 
   private void cacheEntity(Entity entity) {
-    MemcacheService cache = getEntityCache();    
-    cache.put(entity.getKey(), entity);
+  	try {
+      MemcacheService cache = getEntityCache();    
+      cache.put(entity.getKey(), entity);
+  	} catch (Exception e) {
+  	}
   }
   
   private void purgeCachedEntity(Key key) {
-    MemcacheService cache = getEntityCache();    
-    cache.delete(key);
+  	try {
+      MemcacheService cache = getEntityCache();    
+      cache.delete(key);
+  	} catch (Exception e) {
+  		
+  	}
   }
   
   private MemcacheService getEntityCache() {
-    return MemcacheServiceFactory.getMemcacheService();
+    return MemcacheServiceFactory.getMemcacheService("search-entities");
+  }
+  
+  private MemcacheService getLookupCache() {
+    return MemcacheServiceFactory.getMemcacheService("search-lookup");
+  }
+  
+  protected MemcacheService getCustomCache() {
+    return MemcacheServiceFactory.getMemcacheService("search-custom");
+  }
+  
+  protected Key createNullLookupKey() {
+  	return KeyFactory.createKey("NULL", -1);
+  }
+  
+  protected boolean isNullLookupKey(Key key) {
+  	return "NULL".equals(key.getKind()) && key.getId() == -1;
+  }
+  
+  protected Key getLookupKey(Object lookupKey) {
+  	try {
+  		return (Key) getLookupCache().get(lookupKey);
+  	} catch (Exception e) {
+  		return null;
+  	}
+  }
+  
+  protected void putLookupKey(Object lookupKey, Key key) {
+  	try {
+  		getLookupCache().put(lookupKey, key);
+  	} catch (Exception e) {
+  	}
+  }
+  
+  protected void removeLookupKey(Object lookupKey) {
+  	try {
+  		getLookupCache().delete(lookupKey);
+  	} catch (Exception e) {
+  	}
   }
   
   @SuppressWarnings("unchecked")

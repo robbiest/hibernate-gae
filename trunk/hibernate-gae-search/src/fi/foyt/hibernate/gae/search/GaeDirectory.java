@@ -22,18 +22,14 @@ public class GaeDirectory extends Directory implements Serializable {
 
   private static Logger LOG = Logger.getLogger(GaeDirectory.class.getName());
   
-  public GaeDirectory() {
+  public GaeDirectory(fi.foyt.hibernate.gae.search.persistence.domainmodel.Directory directory) {
+    this.directory = directory;
+    
     try {
-      setLockFactory(new GaeLockFactory());
+      setLockFactory(new GaeLockFactory(this.getDirectory()));
     } catch (IOException e) {
       LOG.log(Level.SEVERE, "Could not initialize lock factory", e);
     }
-  }
-
-  public GaeDirectory(fi.foyt.hibernate.gae.search.persistence.domainmodel.Directory directory) {
-    this();
-    
-    this.directory = directory;
   }
 
   @Override

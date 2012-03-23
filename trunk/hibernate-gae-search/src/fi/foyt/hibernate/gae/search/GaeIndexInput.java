@@ -30,35 +30,43 @@ public class GaeIndexInput extends IndexInput implements Cloneable {
 
   @Override
   public byte readByte() throws IOException {
-    if (segmentPosition >= GaeFile.SEGMENT_SIZE) {
-      currentSegmentIndex++;
-      switchCurrentSegment(true);
-    }
-    return getCurrentSegment().getData()[segmentPosition++];
-  }
-
-  @Override
-  public void readBytes(byte[] b, int offset, int len) throws IOException {
-  	long time = System.currentTimeMillis();
-  	int originalLen = len;
-  	
-  	while (len > 0) {
+  	try {
       if (segmentPosition >= GaeFile.SEGMENT_SIZE) {
         currentSegmentIndex++;
         switchCurrentSegment(true);
       }
+      return getCurrentSegment().getData()[segmentPosition++];
+  	} catch (Exception e) {
+  		throw new IOException(e);
+  	}
+  }
 
-      byte[] segmentData = getCurrentSegment().getData();
-
-      int remainInBuffer = segmentData.length - segmentPosition;
-      int bytesToCopy = len < remainInBuffer ? len : remainInBuffer;
-      System.arraycopy(segmentData, segmentPosition, b, offset, bytesToCopy);
-      offset += bytesToCopy;
-      len -= bytesToCopy;
-      segmentPosition += bytesToCopy;
-    }
-  	
-  	LOG.fine("Read " + originalLen + " bytes in " + (System.currentTimeMillis() - time) + "ms");
+  @Override
+  public void readBytes(byte[] b, int offset, int len) throws IOException {
+  	try {
+    	long time = System.currentTimeMillis();
+    	int originalLen = len;
+    	
+    	while (len > 0) {
+        if (segmentPosition >= GaeFile.SEGMENT_SIZE) {
+          currentSegmentIndex++;
+          switchCurrentSegment(true);
+        }
+  
+        byte[] segmentData = getCurrentSegment().getData();
+  
+        int remainInBuffer = segmentData.length - segmentPosition;
+        int bytesToCopy = len < remainInBuffer ? len : remainInBuffer;
+        System.arraycopy(segmentData, segmentPosition, b, offset, bytesToCopy);
+        offset += bytesToCopy;
+        len -= bytesToCopy;
+        segmentPosition += bytesToCopy;
+      }
+    	
+    	LOG.fine("Read " + originalLen + " bytes in " + (System.currentTimeMillis() - time) + "ms");
+  	} catch (Exception e) {
+  		throw new IOException(e);
+  	}
   }
 
   private final void switchCurrentSegment(boolean enforceEOF) throws IOException {
